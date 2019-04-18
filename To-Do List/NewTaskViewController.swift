@@ -8,6 +8,7 @@
 
 import UIKit
 
+//Function to dismiss keyboard when user touch in blank space
 extension UIViewController{
     func hideKeyboard(){
         let tap:UITapGestureRecognizer = UITapGestureRecognizer(target: self, action: #selector (dismissKeyboard))
@@ -21,7 +22,6 @@ extension UIViewController{
 
 class NewTaskViewController: UIViewController,  UITextFieldDelegate, UIPickerViewDelegate, UIPickerViewDataSource {
     // Start declaration of variables
-    @IBOutlet weak var confirmButton: UIButton!
     @IBOutlet weak var taskStatusLabel: UITextField!
     @IBOutlet weak var taskTitleLabel: UITextField!
     @IBOutlet weak var taskDescriptionLabel: UITextField!
@@ -54,7 +54,6 @@ class NewTaskViewController: UIViewController,  UITextFieldDelegate, UIPickerVie
             taskStatusLabel.text = task!.taskStatus
             // Edit the layout to show the update menu
             self.navigationItem.title = "Edit Task"
-            confirmButton.setTitle("Update", for: UIControl.State.normal)
         }
         
         taskTitleLabel.delegate = self
@@ -154,7 +153,7 @@ class NewTaskViewController: UIViewController,  UITextFieldDelegate, UIPickerVie
     }
     
     // Function to handle the update or create button
-    @IBAction func createUpdateActionHandler(_ sender: Any) {
+    @IBAction func saveActionClicked(_ sender: Any) {
         let title = taskTitleLabel.text!
         let description = taskDescriptionLabel.text!
         let date = taskDueDateLabel.text!
@@ -162,14 +161,14 @@ class NewTaskViewController: UIViewController,  UITextFieldDelegate, UIPickerVie
         let dueDate = dateFormatter.date(from: date)
         
         if title != "" && description != "" && date != "" && status != ""{
-        // Edit the task
+            // Edit the task
             if task != nil {
                 let _ = databaseController!.updateTask(task: task!, newTitle: title, newDescription: description, newDate: dueDate!, newStatus: status)
                 update = true
                 let message = "Successfully update Task"
                 displayMessage(title: "Success", message: message)
-            
-        // Create a new task
+                
+                // Create a new task
             }else if task == nil {
                 let _ = databaseController!.addTask(title: title, decription: description, dueDate: dueDate!, status: status)
                 update = false
@@ -177,7 +176,7 @@ class NewTaskViewController: UIViewController,  UITextFieldDelegate, UIPickerVie
                 displayMessage(title: "Success", message: message)
             }
         }
-        
+        // Set error messages when there is an empty fields
         var errorMsg = "There are some empty fields: \n"
         
         if taskTitleLabel.text == ""{
@@ -196,6 +195,7 @@ class NewTaskViewController: UIViewController,  UITextFieldDelegate, UIPickerVie
         errorMsg += "Please make sure the fields above are filled first"
         displayMessage(title: "Error", message: errorMsg)
     }
+    
     func displayMessage(title: String, message: String){
         //Show a pop up alert message to the user
         //That all fields are not filled.
@@ -212,6 +212,9 @@ class NewTaskViewController: UIViewController,  UITextFieldDelegate, UIPickerVie
         }
         self.present(alertController, animated: true, completion: nil)
     }
+    
+    //When user finish editing and succesfully saved, then click the "dismiss" button from alert controller
+    // .. will navigate to the previous view controller.
     func dismissButtonHandler(){
         navigationController?.popViewController(animated: true)
     }

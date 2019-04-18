@@ -27,9 +27,13 @@ extension Task {
         dateFormatter.dateFormat = "dd/MM/yyyy"
         let message = """
         Task title: \(self.taskTitle!)
+        
         Task description: \(self.taskDescription!)
+        
         Task due date: \(dateFormatter.string(from: self.taskDueDate! as Date))
+        
         Task status: \(self.taskStatus!)
+        
         """
         return message
     }

@@ -97,6 +97,7 @@ class TaskListTableViewController: UITableViewController, UISearchResultsUpdatin
             
             // -- To differenciate overdue Task, change the text color to red
             if selectionSegmented.selectedSegmentIndex == 0{
+                taskCell.markCompletedLabel.isHidden = false
                 if (task.taskDueDate! as Date) < today {
                     taskCell.titleLabel.textColor = .red
                     taskCell.dueDateLabel.textColor = .red
