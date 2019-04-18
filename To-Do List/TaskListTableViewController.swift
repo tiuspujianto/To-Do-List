@@ -105,11 +105,13 @@ class TaskListTableViewController: UITableViewController, UISearchResultsUpdatin
                     taskCell.dueDateLabel.textColor = .black
                 }
             }else{
+                taskCell.markCompletedLabel.isHidden = true
                 taskCell.titleLabel.textColor = .black
                 taskCell.dueDateLabel.textColor = .black
             }
             taskCell.markCompletedLabel.tag = indexPath.row
             taskCell.markCompletedLabel.addTarget(self, action: #selector(markCompletedClick), for: UIControl.Event.touchUpInside)
+            
             
             taskCell.titleLabel.text = "\(task.taskTitle!)"
             taskCell.dueDateLabel.text = "\(dateFormatter.string(from: task.taskDueDate! as Date))"
