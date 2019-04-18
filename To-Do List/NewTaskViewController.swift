@@ -45,14 +45,15 @@ class NewTaskViewController: UIViewController,  UITextFieldDelegate, UIPickerVie
         databaseController = appDelegate.databaseController
         dateFormatter.dateFormat = "dd/MM/yyyy"
         
-        // To check an update or new task function
+        // If there is a task passed to this view controller, it means that updating the task
         if task != nil {
             // fill the text label with the selected task detail
             taskTitleLabel.text = task!.taskTitle
             taskDescriptionLabel.text = task!.taskDescription
             taskDueDateLabel.text = dateFormatter.string(from: task!.taskDueDate! as Date)
             taskStatusLabel.text = task!.taskStatus
-            // Edit the layout to show the update menu
+            
+            // Change the navigation item title to "Edit Task"
             self.navigationItem.title = "Edit Task"
         }
         
@@ -86,21 +87,14 @@ class NewTaskViewController: UIViewController,  UITextFieldDelegate, UIPickerVie
     override func viewWillDisappear(_ animated: Bool) {
         let navigationController = self.navigationController!
         let controllers = navigationController.viewControllers.filter( { $0 is TaskDetailsViewController}) as! [TaskDetailsViewController]
-        
         if update! {
-            // To pass the new summary of the selected task
+            // To pass the new summary of the selected task to the previous view (supposed to be task detail
             let viewController = controllers.first
             viewController?.summary = databaseController?.getSummary(task: task!)
         }
     }
     
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        if textField == taskDueDateLabel && textField == taskStatusLabel{
-            return false
-        }
-        return true
-    }
-    
+    // When user press return key, the keyboard will be hidden
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()
         return true
@@ -136,14 +130,17 @@ class NewTaskViewController: UIViewController,  UITextFieldDelegate, UIPickerVie
         self.view.endEditing(true)
     }
     
+    // Number of colomn in UIPickerView
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
     
+    // Number of row in UIPickerView
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         return statusList.count
     }
     
+    // Set up the picker view item
     func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
         return statusList[row]
     }

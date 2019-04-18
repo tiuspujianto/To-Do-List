@@ -20,10 +20,12 @@ class TaskDetailsViewController: UIViewController, UITextViewDelegate {
         super.viewDidLoad()
     }
     
+    // Set the UITextView text to the summary of the selected task
     override func viewWillAppear(_ animated: Bool) {
         taskTextView.text = summary!
     }
     
+    // Pass the selected task to the editing view controller via segue.
     override func prepare(for segue: UIStoryboardSegue, sender: Any?){
         if segue.identifier == "editTaskSegue"{
             let destination = segue.destination as! NewTaskViewController

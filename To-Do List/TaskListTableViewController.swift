@@ -19,11 +19,7 @@ class TaskListTableViewController: UITableViewController, UISearchResultsUpdatin
     let CELL_TASK = "taskCell"
     
 
-    @IBAction func markCompletedClick(_ sender: UIButton) {
-        let index = sender.tag
-        let task = filteredTaskList[index]
-        let _ = databaseController?.updateTask(task: task, newTitle: task.taskTitle!, newDescription: task.taskDescription!, newDate: task.taskDueDate! as Date, newStatus: "Completed")
-    }
+
     
     var taskLists: [Task] = []
     var filteredTaskList: [Task] = []
@@ -95,7 +91,7 @@ class TaskListTableViewController: UITableViewController, UISearchResultsUpdatin
             let task = filteredTaskList[indexPath.row]
             let today = Date()
             
-            // -- To differenciate overdue Task, change the text color to red
+            // -- To differenciate overdue Task, change the text color to red (only for the in progress task)
             if selectionSegmented.selectedSegmentIndex == 0{
                 taskCell.markCompletedLabel.isHidden = false
                 if (task.taskDueDate! as Date) < today {
@@ -106,6 +102,7 @@ class TaskListTableViewController: UITableViewController, UISearchResultsUpdatin
                     taskCell.dueDateLabel.textColor = .black
                 }
             }else{
+                // Disabled the mark as complete button in Completed section, and set the text color to black.
                 taskCell.markCompletedLabel.isHidden = true
                 taskCell.titleLabel.textColor = .black
                 taskCell.dueDateLabel.textColor = .black
@@ -118,14 +115,21 @@ class TaskListTableViewController: UITableViewController, UISearchResultsUpdatin
             taskCell.dueDateLabel.text = "\(dateFormatter.string(from: task.taskDueDate! as Date))"
             return taskCell
         }
-        
+            // Create count cell, to calculate the number of item in the list, based on the search results also
             let countCell = tableView.dequeueReusableCell(withIdentifier: COUNT_CELL, for: indexPath)
-            countCell.textLabel?.text = "\(taskLists.count) tasks"
+            countCell.textLabel?.text = "\(filteredTaskList.count) tasks"
             countCell.selectionStyle = .none
             countCell.textLabel?.textAlignment = .center
             return countCell
     }
+    // Function to handle when the user click "mark as complete"
+    @IBAction func markCompletedClick(_ sender: UIButton) {
+        let index = sender.tag
+        let task = filteredTaskList[index]
+        let _ = databaseController?.updateTask(task: task, newTitle: task.taskTitle!, newDescription: task.taskDescription!, newDate: task.taskDueDate! as Date, newStatus: "Completed")
+    }
     
+    // enable the user to delete by swipe to the left of the selected content
     override func tableView(_ tableView: UITableView, canEditRowAt indexPath: IndexPath) -> Bool {
         if indexPath.section == TASK_SECTION{
             return true
@@ -139,6 +143,7 @@ class TaskListTableViewController: UITableViewController, UISearchResultsUpdatin
         }
     }
     
+    // Pass the selected task to the task details view controller via segue
     override func prepare(for segue: UIStoryboardSegue, sender: Any?){
         let index = self.tableView.indexPathForSelectedRow
         if segue.identifier == "showDetailSegue"{
@@ -165,10 +170,5 @@ class TaskListTableViewController: UITableViewController, UISearchResultsUpdatin
         }
         databaseController?.addListener(listener: self)
         self.tableView.reloadData()
-    }
-    @objc func yourButtonClicked(sender: UIButton){
-        let index = sender.tag
-        let task = filteredTaskList[index]
-        let _ = databaseController?.updateTask(task: task, newTitle: task.taskTitle!, newDescription: task.taskDescription!, newDate: task.taskDueDate! as Date, newStatus: "Completed")
     }
 }
