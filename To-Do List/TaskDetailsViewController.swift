@@ -21,7 +21,6 @@ class TaskDetailsViewController: UIViewController, UITextViewDelegate {
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        print(summary)
         taskTextView.text = summary!
     }
     
