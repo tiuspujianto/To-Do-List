@@ -84,7 +84,7 @@ class CoreDataController: NSObject, DatabaseProtocol, NSFetchedResultsController
         if taskFetchedResultsController == nil {
             let fetchRequest: NSFetchRequest<Task> = Task.fetchRequest()
             fetchRequest.predicate = NSPredicate(format: "taskStatus == %@", "In Progress")
-            let nameSortDescriptor = NSSortDescriptor(key: "taskTitle", ascending: true)
+            let nameSortDescriptor = NSSortDescriptor(key: "taskDueDate", ascending: true)
             fetchRequest.sortDescriptors=[nameSortDescriptor]
             taskFetchedResultsController = NSFetchedResultsController<Task>(fetchRequest: fetchRequest, managedObjectContext: persistantContainer.viewContext, sectionNameKeyPath: nil, cacheName: nil)
             taskFetchedResultsController?.delegate = self
@@ -106,7 +106,7 @@ class CoreDataController: NSObject, DatabaseProtocol, NSFetchedResultsController
         if completedTaskFetchedResultsController == nil {
             let fetchRequest: NSFetchRequest<Task> = Task.fetchRequest()
             fetchRequest.predicate = NSPredicate(format: "taskStatus == %@", "Completed")
-            let nameSortDescriptor = NSSortDescriptor(key: "taskTitle", ascending: true)
+            let nameSortDescriptor = NSSortDescriptor(key: "taskDueDate", ascending: true)
             fetchRequest.sortDescriptors=[nameSortDescriptor]
             completedTaskFetchedResultsController = NSFetchedResultsController<Task>(fetchRequest: fetchRequest, managedObjectContext: persistantContainer.viewContext, sectionNameKeyPath: nil, cacheName: nil)
             completedTaskFetchedResultsController?.delegate = self
